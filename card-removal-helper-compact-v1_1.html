@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Card Removal Helper — Compact (v1.1)</title>
+  <style>
+    :root{--bg:#0b1020;--panel:#11172b;--text:#eaf0ff;--muted:#a8b0c8;--accent:#7aa2ff;--ok:#2ecc71;--warn:#ffcf5c;--danger:#ff6b6b}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:radial-gradient(1200px 800px at 20% 0%, #0d1635, #070b18 65%, #050810 100%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.5}
+    header{padding:16px 14px 8px;text-align:center}
+    h1{margin:0 0 4px;font-weight:800;font-size:1.25rem}
+    .sub{color:var(--muted);font-size:.9rem}
+    .wrap{max-width:820px;margin:0 auto;padding:12px}
+
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid rgba(122,162,255,.15);backdrop-filter:blur(6px);border-radius:16px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.2);}
+
+    .grid{display:grid;gap:10px}
+    @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+
+    label{display:block;font-weight:600;font-size:.95rem;margin:10px 0 6px}
+    input,select,button{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(122,162,255,.25);background:rgba(255,255,255,.05);color:var(--text);outline:none;transition:.2s}
+    input:focus,select:focus,button:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(122,162,255,.18)}
+    input[type=number]{appearance:textfield}
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{appearance:none;margin:0}
+
+    .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+    @media(max-width:480px){.row{grid-template-columns:1fr}}
+
+    .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    button{cursor:pointer;font-weight:700;letter-spacing:.2px}
+    .primary{background:linear-gradient(90deg,#6f92ff,#4f7aff);border:none}
+    .ghost{background:transparent;border:1px dashed rgba(122,162,255,.35)}
+
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    @media(min-width:720px){.stats{grid-template-columns:repeat(4,1fr)}}
+    .stat{background:rgba(255,255,255,.04);padding:10px;border-radius:12px;border:1px solid rgba(122,162,255,.15)}
+    .k{font-size:.78rem;color:var(--muted)}
+    .v{font-size:1.15rem;font-weight:800;margin-top:4px}
+
+    .msg{margin:10px 0;padding:10px 12px;border-radius:12px;border:1px solid rgba(122,162,255,.25)}
+    .ok{background:rgba(46,204,113,.08);border-color:rgba(46,204,113,.3)}
+    .err{background:rgba(255,107,107,.1);border-color:rgba(255,107,107,.4)}
+    .warn{background:rgba(255,207,92,.1);border-color:rgba(255,207,92,.4)}
+
+    .section-title{font-weight:800;margin:10px 0 6px}
+    .list{display:grid;gap:8px}
+    .rowitem{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);padding:12px;border-radius:12px;border:1px solid rgba(122,162,255,.15)}
+    .count{margin-left:auto;font-weight:800;color:var(--muted)}
+    .imp{color:#ffd966;border:1px solid rgba(255,207,92,.45);padding:2px 8px;border-radius:8px;font-size:.8rem}
+
+    details{background:rgba(255,255,255,.04);border:1px dashed rgba(122,162,255,.3);padding:8px 10px;border-radius:12px}
+    summary{cursor:pointer;font-weight:700}
+    .hr{height:1px;background:linear-gradient(90deg,rgba(122,162,255,0),rgba(122,162,255,.4),rgba(122,162,255,0));margin:12px 0}
+    footer{opacity:.8;text-align:center;padding:16px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Card Removal Helper</h1>
+    <div class="sub">Compact planner for <b>Kali Teedi</b> & <b>Mindi</b> — mobile friendly.</div>
+  </header>
+  <div class="wrap">
+    <div class="grid">
+      <div class="card">
+        <h2 style="margin:4px 0 10px;font-size:1.05rem">Inputs</h2>
+        <label for="game">Game</label>
+        <select id="game">
+          <option value="kali">Kali Teedi</option>
+          <option value="mindi">Mindi</option>
+        </select>
+        <div class="row">
+          <div>
+            <label for="decks">Number of decks</label>
+            <input id="decks" type="number" inputmode="numeric" pattern="[0-9]*" step="1" min="1" max="20" value="3" />
+          </div>
+          <div>
+            <label for="people">Number of people</label>
+            <input id="people" type="number" inputmode="numeric" pattern="[0-9]*" step="1" min="1" max="20" value="6" />
+          </div>
+          <div>
+            <label for="cpp">Cards per person</label>
+            <input id="cpp" type="number" inputmode="numeric" pattern="[0-9]*" step="1" min="1" max="52" value="17" />
+          </div>
+        </div>
+        <div class="btns">
+          <button id="calc" class="primary">Calculate</button>
+          <button id="exampleKali" class="ghost">Load Example (Kali)</button>
+          <button id="reset" class="ghost">Reset</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin:4px 0 10px;font-size:1.05rem">Totals</h2>
+        <div class="stats">
+          <div class="stat"><div class="k">Cards per deck</div><div class="v" id="cardsPerDeck">52</div></div>
+          <div class="stat"><div class="k">Total available</div><div class="v" id="totalAvailable">—</div></div>
+          <div class="stat"><div class="k">Needed (people × cards)</div><div class="v" id="totalNeeded">—</div></div>
+          <div class="stat"><div class="k">To remove</div><div class="v" id="toRemove">—</div></div>
+        </div>
+        <div id="feasibility" class="msg" style="display:none"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:4px 0 6px;font-size:1.05rem">Removal Plan (compact)</h2>
+      <div class="msg warn" style="margin-top:6px">We remove from the lowest ranks upward while protecting important cards for the selected game.</div>
+      <div id="removalContainer">Run a calculation to see which cards to remove.</div>
+    </div>
+
+    <footer>Assumes standard 52‑card decks (no jokers). Compact view groups by rank (e.g., “remove 12 × 2s”).</footer>
+  </div>
+
+  <script>
+    const SUITS = ["♣","♦","♥","♠"]; // suit order for tiebreakers (internal)
+    const RANKS = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]; // low -> high
+    const rankValue = Object.fromEntries(RANKS.map((r,i)=>[r,i]));
+
+    // --- Helpers to make input robust on mobile / pasted text ---
+    function sanitizeNumeric(value) {
+      // Keep only digits; ignore everything else like *, \\ etc.
+      if (typeof value !== 'string') value = String(value ?? '');
+      const cleaned = value.replace(/[^0-9]/g, '');
+      if (cleaned.length === 0) return 0;
+      const n = parseInt(cleaned, 10);
+      return Number.isFinite(n) ? n : 0;
+    }
+    function getInt(id, min, max, fallback) {
+      let raw = document.getElementById(id).value;
+      let n = sanitizeNumeric(raw);
+      if (!Number.isFinite(n) || n === 0) n = fallback;
+      if (min != null) n = Math.max(min, n);
+      if (max != null) n = Math.min(max, n);
+      return n;
+    }
+    function attachSanitizers(ids){
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        ['input','change','blur'].forEach(evt => {
+          el.addEventListener(evt, () => {
+            const n = sanitizeNumeric(el.value);
+            el.value = (n === 0 ? '' : String(n));
+          });
+        });
+      });
+    }
+
+    function buildMultiDeck(n){
+      const cards=[]; for(let d=0; d<n; d++){ for(const r of RANKS){ for(const s of SUITS){ cards.push({rank:r,suit:s}); } } } return cards;
+    }
+
+    function isImportant(game, card){
+      if(game==='kali'){
+        // Important: A,5,10,J,Q,K (all suits) + only 3♠
+        const impRanks = new Set(["A","5","10","J","Q","K"]);
+        if(impRanks.has(card.rank)) return true;
+        return (card.rank==='3' && card.suit==='♠');
+      } else if(game==='mindi'){
+        // Important: Aces only
+        return card.rank==='A';
+      }
+      return false;
+    }
+
+    function sortAscending(cards){
+      return cards.slice().sort((a,b)=>{
+        const rv = rankValue[a.rank]-rankValue[b.rank];
+        if(rv!==0) return rv; return SUITS.indexOf(a.suit)-SUITS.indexOf(b.suit);
+      });
+    }
+
+    function groupByRank(cards){
+      const map = new Map();
+      for(const c of cards){ map.set(c.rank, (map.get(c.rank)||0)+1); }
+      return RANKS.filter(r=>map.has(r)).map(r=>({rank:r,count:map.get(r)}));
+    }
+
+    function groupByCard(cards){
+      // for optional details
+      const map = new Map();
+      for(const c of cards){ const k=c.rank+c.suit; map.set(k,(map.get(k)||0)+1);} 
+      const entries = Array.from(map.entries()).sort((a,b)=>{
+        const [ra,sa] = [a[0].slice(0,a[0].length-1), a[0].slice(-1)];
+        const [rb,sb] = [b[0].slice(0,b[0].length-1), b[0].slice(-1)];
+        const rv = rankValue[ra]-rankValue[rb];
+        if(rv!==0) return rv; return SUITS.indexOf(sa)-SUITS.indexOf(sb);
+      });
+      return entries.map(([k,cnt])=>({key:k,count:cnt}));
+    }
+
+    function compute(){
+      const game = document.getElementById('game').value;
+      const decks = getInt('decks', 1, 20, 1);
+      const people = getInt('people', 1, 20, 4);
+      const cpp = getInt('cpp', 1, 52, 5);
+
+      const perDeck=52, totalAvailable=perDeck*decks, totalNeeded=people*cpp, toRemove=Math.max(0,totalAvailable-totalNeeded);
+      document.getElementById('cardsPerDeck').textContent=perDeck;
+      document.getElementById('totalAvailable').textContent=totalAvailable;
+      document.getElementById('totalNeeded').textContent=totalNeeded;
+      document.getElementById('toRemove').textContent=toRemove;
+
+      const feas = document.getElementById('feasibility');
+      feas.style.display='block';
+      if(totalNeeded>totalAvailable){
+        feas.className='msg err';
+        feas.innerHTML=`Need <b>${totalNeeded}</b> cards but only have <b>${totalAvailable}</b>. Increase decks or reduce cards/people.`;
+      } else if(toRemove===0){
+        feas.className='msg ok';feas.textContent='Perfect fit: no cards to remove.';
+      } else { feas.className='msg ok';feas.innerHTML=`Remove <b>${toRemove}</b> card(s).`; }
+
+      const container=document.getElementById('removalContainer');
+      if(totalNeeded>totalAvailable){ container.textContent='—'; return; }
+
+      // Build removal list (non-important first, lowest upward)
+      const all = sortAscending(buildMultiDeck(decks));
+      const nonImp=[], imp=[];
+      for(const c of all){ (isImportant(game,c) ? imp : nonImp).push(c); }
+
+      const removal=[]; let remain=toRemove;
+      for(const c of nonImp){ if(remain<=0) break; removal.push({...c,important:false}); remain--; }
+      for(const c of imp){ if(remain<=0) break; removal.push({...c,important:true}); remain--; }
+
+      const usedImp = removal.filter(x=>x.important).length;
+      const compact = groupByRank(removal);
+      const detail = groupByCard(removal);
+
+      let html='';
+      if(usedImp>0){ html += `<div class=\"msg warn\">Important note: Not enough non‑important cards; had to remove <b>${usedImp}</b> important card(s).</div>`; }
+
+      html += '<div class="section-title">Compact list (by rank)</div>';
+      html += '<div class="list">';
+      for(const item of compact){
+        const rankImportant = (game==='kali') ? new Set(["A","5","10","J","Q","K"]).has(item.rank)
+                              : (game==='mindi') ? (item.rank==='A') : false;
+        html += `<div class="rowitem"><span>Remove <b>${item.count}</b> × <b>${item.rank}</b>s</span>${rankImportant?'<span class="imp" style="margin-left:8px">includes important</span>':''}</div>`;
+      }
+      html += '</div>';
+
+      html += '<div class="hr"></div>';
+      html += `<details><summary>Show detailed suits (${detail.length} unique cards)</summary>`;
+      html += '<div class="list">';
+      for(const item of detail){
+        const suit = item.key.slice(-1), rank = item.key.slice(0,item.key.length-1);
+        const impFlag = isImportant(game,{rank,suit});
+        html += `<div class="rowitem">${rank}${suit} ${impFlag?'<span class="imp">important</span>':''}<span class="count">× ${item.count}</span></div>`;
+      }
+      html += '</div></details>';
+
+      container.innerHTML = html;
+    }
+
+    document.getElementById('calc').addEventListener('click', compute);
+    document.getElementById('reset').addEventListener('click', ()=>{
+      document.getElementById('game').value='kali';
+      document.getElementById('decks').value='';
+      document.getElementById('people').value='';
+      document.getElementById('cpp').value='';
+      document.getElementById('totalAvailable').textContent='—';
+      document.getElementById('totalNeeded').textContent='—';
+      document.getElementById('toRemove').textContent='—';
+      document.getElementById('feasibility').style.display='none';
+      document.getElementById('removalContainer').textContent='Run a calculation to see which cards to remove.';
+    });
+    document.getElementById('exampleKali').addEventListener('click', ()=>{
+      document.getElementById('game').value='kali';
+      document.getElementById('decks').value='3';
+      document.getElementById('people').value='6';
+      document.getElementById('cpp').value='17';
+      compute();
+    });
+
+    // Attach input sanitizers for mobile/paste edge cases
+    attachSanitizers(['decks','people','cpp']);
+
+    // First run with example
+    compute();
+  </script>
+</body>
+</html>
